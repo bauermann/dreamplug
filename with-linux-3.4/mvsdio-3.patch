@@ -1,0 +1,13 @@
+Index: linux-3.4/drivers/mmc/core/core.c
+===================================================================
+--- linux-3.4.orig/drivers/mmc/core/core.c	2012-05-27 15:26:08.394167850 -0300
++++ linux-3.4/drivers/mmc/core/core.c	2012-05-27 15:26:38.085113097 -0300
+@@ -536,7 +536,7 @@
+ 			 */
+ 			limit_us = 3000000;
+ 		else
+-			limit_us = 100000;
++			limit_us = 200000;
+ 
+ 		/*
+ 		 * SDHC cards always use these fixed values.

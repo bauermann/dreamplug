@@ -1,0 +1,8 @@
+dreamplug-3.4.0.patch
+mvsdio-1-2.6.30.patch
+mvsdio-2.patch
+mvsdio-3.patch
+linux-3.0-SDIO-micro-AP.patch
+0002-Driver-for-Marvell-Libertas-8688-SDIO-micro-AP-suppo-3.2.patch
+linux-3.0.4-LIBERTAS-WEXT_PRIV.patch
+phys-virt.diff

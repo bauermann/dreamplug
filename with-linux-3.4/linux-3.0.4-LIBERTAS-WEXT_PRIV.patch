@@ -1,0 +1,10 @@
+--- ./drivers/net/wireless/libertas/Kconfig.orig	2011-08-29 14:56:30.000000000 -0600
++++ ./drivers/net/wireless/libertas/Kconfig	2011-09-13 20:37:23.660904556 -0600
+@@ -3,6 +3,7 @@ config LIBERTAS
+ 	depends on CFG80211
+ 	select WIRELESS_EXT
+ 	select WEXT_SPY
++	select WEXT_PRIV
+ 	select LIB80211
+ 	select FW_LOADER
+ 	---help---

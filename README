@@ -1,0 +1,52 @@
+Patches in with-linux-3.4
+=========================
+
+These patches were adapted to apply on Linux 3.4 from the ones found here:
+
+http://sheeva.with-linux.com/sheeva/kernel/3/3.2/3.2.9/source/
+
+They assume the Dreamplug has the original u-boot shipped by Marvel. This
+means that the kernel will expect it to report the Guruplug machine id
+2659 instead of the official 3550, and it assumes u-boot doesn't provide
+a flattened device tree. If your u-boot uses the Dreamplug id then you
+can just remove the section about linux-3.4/arch/arm/tools/mach-types
+from dreamplug-3.4.0.patch. If it also provides a flattened device tree,
+then you don't need dreamplug-3.4.0.patch at all.
+
+Using the kernel patches
+------------------------
+
+Instructions based on freedom-maker's README [1].
+
+To compile your own kernel, you can use config-3.4.0-1bauer2-kirkwood as basis.
+Follow the following steps on the DreamPlug to compile a new kernel:
+
+  1. Get the kernel source and other needed packages.
+    # apt-get kernel-package lzma quilt
+  2. Get the Linux 3.4 kernel.
+    # wget https://www.kernel.org/pub/linux/kernel/v3.0/linux-3.4.tar.bz2
+  2. Unpack it somewhere.
+    # tar xfj linux-3.4.tar.bz2
+  3. Apply the patches found in with-linux-3.4.
+    # cd linux-3.4
+    # ln -s ../with-linux-3.4 patches
+    # quilt push -a
+  4. Copy the config and compile.
+    # cp ../config-3.4.0-1bauer2-kirkwood .config
+    # make-kpkg clean
+    # make-kpkg --append-to-version -1bauer2-kirkwood --revision=3.4.0-1bauer2 --initrd --cross_compile=- kernel_image kernel_headers
+  5. Install the packages.
+    # dpkg -i ../linux-{image,headers}-3.4.0-1bauer2-kirkwood_3.4.0-1bauer2_armel.deb
+
+After kernel is installed on device, hooks should be calling:
+    # flash-kernel 3.4.0-1bauer2-kirkwood
+
+After that you should get a uImage and uInitrd files under /boot.
+
+These packages should get a kernel up and running into DreamPlug device.
+The compilation process takes 6 hours on the DreamPlug. You will need
+approximately 1 GB of free space for the build (including the size of the
+unpacked kernel source).
+
+-- 
+[1] http://anonscm.debian.org/git/freedombox/freedom-maker.git/

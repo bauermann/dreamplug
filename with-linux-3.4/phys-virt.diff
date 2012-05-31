@@ -1,0 +1,14 @@
+Index: linux-3.4/arch/arm/Kconfig
+===================================================================
+--- linux-3.4.orig/arch/arm/Kconfig	2012-05-27 17:00:06.244112647 -0300
++++ linux-3.4/arch/arm/Kconfig	2012-05-27 17:01:06.456038133 -0300
+@@ -235,8 +235,7 @@
+ 
+ config PHYS_OFFSET
+ 	hex "Physical address of main memory" if MMU
+-	depends on !ARM_PATCH_PHYS_VIRT && !NEED_MACH_MEMORY_H
+-	default DRAM_BASE if !MMU
++	default 0x0
+ 	help
+ 	  Please provide the physical address corresponding to the
+ 	  location of main memory in your system.

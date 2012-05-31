@@ -1,0 +1,107 @@
+Index: linux-3.4/arch/arm/mach-kirkwood/Kconfig
+===================================================================
+--- linux-3.4.orig/arch/arm/mach-kirkwood/Kconfig	2012-05-27 17:28:53.529328624 -0300
++++ linux-3.4/arch/arm/mach-kirkwood/Kconfig	2012-05-27 17:28:56.329418105 -0300
+@@ -44,6 +44,12 @@
+ 	  Say 'Y' here if you want your kernel to support the
+ 	  Marvell GuruPlug Reference Board.
+ 
++config MACH_DREAMPLUG
++	bool "Marvell DreamPlug Reference Board"
++	help
++	  Say 'Y' here if you want your kernel to support the
++	  Marvell DreamPlug Reference Board.
++
+ config ARCH_KIRKWOOD_DT
+ 	bool "Marvell Kirkwood Flattened Device Tree"
+ 	select USE_OF
+Index: linux-3.4/arch/arm/mach-kirkwood/Makefile
+===================================================================
+--- linux-3.4.orig/arch/arm/mach-kirkwood/Makefile	2012-05-27 17:28:53.599330861 -0300
++++ linux-3.4/arch/arm/mach-kirkwood/Makefile	2012-05-27 17:28:56.329418105 -0300
+@@ -7,6 +7,7 @@
+ obj-$(CONFIG_MACH_SHEEVAPLUG)		+= sheevaplug-setup.o
+ obj-$(CONFIG_MACH_ESATA_SHEEVAPLUG)	+= sheevaplug-setup.o
+ obj-$(CONFIG_MACH_GURUPLUG)		+= guruplug-setup.o
++obj-$(CONFIG_MACH_DREAMPLUG)		+= board-dreamplug.o
+ obj-$(CONFIG_MACH_DOCKSTAR)		+= dockstar-setup.o
+ obj-$(CONFIG_MACH_TS219)		+= ts219-setup.o tsx1x-common.o
+ obj-$(CONFIG_MACH_TS41X)		+= ts41x-setup.o tsx1x-common.o
+Index: linux-3.4/arch/arm/mach-kirkwood/board-dreamplug.c
+===================================================================
+--- linux-3.4.orig/arch/arm/mach-kirkwood/board-dreamplug.c	2012-05-27 17:28:53.479327026 -0300
++++ linux-3.4/arch/arm/mach-kirkwood/board-dreamplug.c	2012-05-27 17:28:56.329418105 -0300
+@@ -48,11 +48,13 @@
+ 		.size	= SZ_64K,
+ 		.offset = SZ_512K + SZ_512K,
+ 	},
++#ifdef CONFIG_MACH_DREAMPLUG_DT
+ 	{
+ 		.name	= "dtb",
+ 		.size	= SZ_64K,
+ 		.offset = SZ_512K + SZ_512K + SZ_512K,
+ 	},
++#endif
+ };
+ 
+ static const struct flash_platform_data dreamplug_spi_slave_data = {
+@@ -136,8 +138,16 @@
+ 	/*
+ 	 * Basic setup. Needs to be called early.
+ 	 */
++#ifdef CONFIG_MACH_DREAMPLUG
++	kirkwood_init();
++#endif
++
+ 	kirkwood_mpp_conf(dreamplug_mpp_config);
+ 
++#ifdef CONFIG_MACH_DREAMPLUG
++	kirkwood_uart0_init();
++#endif
++
+ 	spi_register_board_info(dreamplug_spi_slave_info,
+ 				ARRAY_SIZE(dreamplug_spi_slave_info));
+ 	kirkwood_spi_init();
+@@ -150,3 +160,16 @@
+ 
+ 	platform_device_register(&dreamplug_leds);
+ }
++
++#ifdef CONFIG_MACH_DREAMPLUG
++MACHINE_START(DREAMPLUG, "Marvell DreamPlug Reference Board")
++	/* Maintainer: ? */
++	.map_io		= kirkwood_map_io,
++	.init_early	= kirkwood_init_early,
++	.init_irq	= kirkwood_init_irq,
++	.timer		= &kirkwood_timer,
++	.init_machine	= dreamplug_init,
++	.restart	= kirkwood_restart,
++	.atag_offset	= 0x100,
++MACHINE_END
++#endif
+Index: linux-3.4/arch/arm/tools/mach-types
+===================================================================
+--- linux-3.4.orig/arch/arm/tools/mach-types	2012-05-27 17:28:53.429325427 -0300
++++ linux-3.4/arch/arm/tools/mach-types	2012-05-27 17:28:56.339418425 -0300
+@@ -845,7 +845,7 @@
+ mx51_ivy		MACH_MX51_IVY		MX51_IVY		3547
+ mx51_lvd		MACH_MX51_LVD		MX51_LVD		3548
+ omap3_wiser2		MACH_OMAP3_WISER2	OMAP3_WISER2		3549
+-dreamplug		MACH_DREAMPLUG		DREAMPLUG		3550
++dreamplug		MACH_DREAMPLUG		DREAMPLUG		2659
+ cobas_c_111		MACH_COBAS_C_111	COBAS_C_111		3551
+ cobas_u_411		MACH_COBAS_U_411	COBAS_U_411		3552
+ hssd			MACH_HSSD		HSSD			3553
+Index: linux-3.4/arch/arm/mach-kirkwood/common.h
+===================================================================
+--- linux-3.4.orig/arch/arm/mach-kirkwood/common.h	2012-05-27 17:29:00.629555522 -0300
++++ linux-3.4/arch/arm/mach-kirkwood/common.h	2012-05-27 17:36:06.263156553 -0300
+@@ -52,7 +52,7 @@
+ void kirkwood_restart(char, const char *);
+ 
+ /* board init functions for boards not fully converted to fdt */
+-#ifdef CONFIG_MACH_DREAMPLUG_DT
++#if defined CONFIG_MACH_DREAMPLUG_DT || defined CONFIG_MACH_DREAMPLUG
+ void dreamplug_init(void);
+ #else
+ static inline void dreamplug_init(void) {};

@@ -1,0 +1,31 @@
+--- ./drivers/net/wireless/libertas_uap/uap_main.c.orig	2012-01-05 02:04:22.082318156 -0700
++++ ./drivers/net/wireless/libertas_uap/uap_main.c	2012-01-05 02:05:50.161341323 -0700
+@@ -1322,20 +1322,6 @@ uap_set_mac_address(struct net_device *d
+ }
+ 
+ /**
+- *  @brief This function sets multicast addresses to firmware
+- *
+- *  @param dev     A pointer to net_device structure
+- *  @return        n/a
+- */
+-static void
+-uap_set_multicast_list(struct net_device *dev)
+-{
+-    ENTER();
+-#warning uap_set_multicast_list not implemented. Expect problems with IPv6.
+-    LEAVE();
+-}
+-
+-/**
+  *  @brief This function handles the timeout of packet
+  *  transmission
+  *
+@@ -1558,7 +1544,6 @@ static const struct net_device_ops uap_n
+     .ndo_set_mac_address = uap_set_mac_address,
+     .ndo_tx_timeout = uap_tx_timeout,
+     .ndo_get_stats = uap_get_stats,
+-    .ndo_set_multicast_list = uap_set_multicast_list,
+ };
+ #endif
+ 
